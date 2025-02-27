@@ -49,8 +49,22 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, ignore, skipCreatorField
           continue
       }
 
-      if (ignorePaths?.indexOf(fullFieldName) !== -1) {
-          continue
+      // Check if any ignore path pattern matches the current field path
+      if (ignorePaths?.some(pattern => {
+          // Check if pattern is a regex string (starts and ends with /)
+          if (pattern.startsWith('/') && pattern.endsWith('/')) {
+              const regexPattern = new RegExp(pattern.slice(1, -1));
+              return regexPattern.test(fullFieldName);
+          }
+          // Otherwise check if fullFieldName contains the pattern
+          return fullFieldName.includes(pattern);
+      })) {
+          continue;
+      }
+      
+      // Special case for nested localizations - only populate top-level localizations
+      if (key === "localizations" && fullFieldName !== "localizations") {
+          continue;
       }
 
       if (isEmpty(value)) continue
