@@ -25,6 +25,8 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, ignore, skipCreatorField
     return undefined;
   }
 
+  console.log(`modelUid: ${modelUid}, maxDepth: ${maxDepth}, ignore: ${JSON.stringify(ignore)}, skipCreatorFields: ${skipCreatorFields}, ignoreFields: ${JSON.stringify(ignoreFields)}, ignorePaths: ${JSON.stringify(ignorePaths)}, parentPath: ${parentPath}`)
+
   
   const model = strapi.getModel(modelUid);
 
