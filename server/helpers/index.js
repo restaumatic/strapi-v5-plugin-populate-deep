@@ -43,7 +43,7 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, ignore, skipCreatorField
    
       if (ignore?.includes(key)) continue;
 
-      if (ignoreFields?.includes(key) || ignoreFields.has(model.collectionName + '.' + key)) {
+      if (ignoreFields?.includes(key) || ignoreFields?.includes(model.collectionName + '.' + key)) {
           continue
       }
 
