@@ -81,17 +81,23 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, ignore, skipCreatorField
           }, {});
           populate[key] = isEmpty(dynamicPopulate) ? true : { on: dynamicPopulate };
         } else if (value.type === "relation") {
-          const relationPopulate = getFullPopulateObject(
-              value.target,
-              key === "localizations" && maxDepth > 2 ? 1 : maxDepth - 1,
-              ignore,
-              skipCreatorFields,
-              ignoreFields,
-              ignorePaths,
-              fullFieldName
-          );
-          if (relationPopulate) {
-            populate[key] = relationPopulate;
+          if (key === "localizations") {
+            populate[key] = {
+              fields: ['locale']
+            };
+          } else {
+            const relationPopulate = getFullPopulateObject(
+                value.target,
+                maxDepth - 1,
+                ignore,
+                skipCreatorFields,
+                ignoreFields,
+                ignorePaths,
+                fullFieldName
+            );
+            if (relationPopulate) {
+              populate[key] = relationPopulate;
+            }
           }
         } else if (value.type === "media") {
           populate[key] = {
