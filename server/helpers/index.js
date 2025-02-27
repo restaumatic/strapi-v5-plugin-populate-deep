@@ -25,12 +25,13 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, ignore, skipCreatorField
     return undefined;
   }
 
+  
+  const model = strapi.getModel(modelUid);
   const attributes = Object.entries(getModelPopulationAttributes(model)).filter(([, value]) =>
       ['relation', 'component', 'dynamiczone', 'media'].includes(value.type)
   )
 
   const populate = {};
-  const model = strapi.getModel(modelUid);
   if (ignore && !ignore.includes(model.collectionName))
     ignore.push(model.collectionName);
 
