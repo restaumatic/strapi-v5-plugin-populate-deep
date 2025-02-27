@@ -97,7 +97,8 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, ignore, skipCreatorField
         } else if (value.type === "relation") {
           if (key === "localizations") {
             populate[key] = {
-              fields: ['locale']
+              fields: ['locale'],
+              populate: false
             };
           } else {
             const relationPopulate = getFullPopulateObject(
@@ -115,7 +116,8 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, ignore, skipCreatorField
           }
         } else if (value.type === "media") {
           populate[key] = {
-            fields: ['url', 'alternativeText']
+            fields: ['url', 'alternativeText'],
+            populate: false
           };
         }
       }
