@@ -42,8 +42,8 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, ignore, skipCreatorField
       console.log(`Key: ${key}, Value Type: ${value.type}, Full Path: ${fullFieldName}`)
    
       if (ignore?.includes(key)) continue;
-
-      if (ignoreFields?.includes(key) || ignoreFields?.includes(model.collectionName + '.' + key)) {
+    
+    if (ignoreFields?.indexOf(key) !== -1 || ignoreFields?.indexOf(model.collectionName + '.' + key) !== -1) {
           continue
       }
 
