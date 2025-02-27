@@ -58,6 +58,7 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, ignore, skipCreatorField
           populate[key] = getFullPopulateObject(
             value.component,
             maxDepth - 1,
+            ignore,
             skipCreatorFields,
             ignoreFields,
             ignorePaths,
