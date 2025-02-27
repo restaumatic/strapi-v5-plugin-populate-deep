@@ -38,6 +38,8 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, ignore, skipCreatorField
 
     for (const [key, value] of attributes) {
       const fullFieldName = parentPath ? `${parentPath}.${key}` : key
+
+      console.log(`Key: ${key}, Value Type: ${value.type}, Full Path: ${fullFieldName}`)
    
       if (ignore?.includes(key)) continue;
 
@@ -89,7 +91,9 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, ignore, skipCreatorField
             populate[key] = relationPopulate;
           }
         } else if (value.type === "media") {
-          populate[key] = true;
+          populate[key] = {
+            fields: ['url', 'alternativeText']
+          };
         }
       }
     }
