@@ -47,7 +47,7 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, ignore, skipCreatorField
           continue
       }
 
-      if (ignorePaths?.includes(fullFieldName)) {
+      if (ignorePaths?.indexOf(fullFieldName) !== -1) {
           continue
       }
 
