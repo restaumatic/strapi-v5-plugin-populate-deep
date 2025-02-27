@@ -49,6 +49,8 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, ignore, skipCreatorField
           continue
       }
 
+      if (isEmpty(value)) continue
+
       if (value) {
         if (value.type === "component") {
           populate[key] = getFullPopulateObject(
