@@ -27,6 +27,7 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, ignore, skipCreatorField
 
   
   const model = strapi.getModel(modelUid);
+
   const attributes = Object.entries(getModelPopulationAttributes(model)).filter(([, value]) =>
       ['relation', 'component', 'dynamiczone', 'media'].includes(value.type)
   )
