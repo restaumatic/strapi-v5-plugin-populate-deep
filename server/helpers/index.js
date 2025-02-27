@@ -9,10 +9,14 @@ const getModelPopulationAttributes = (model) => {
   return model.attributes;
 };
 
-const getFullPopulateObject = (modelUid, maxDepth = 20, ignore) => {
-  const skipCreatorFields = strapi
-      .plugin("strapi-plugin-populate-deep")
-      ?.config("skipCreatorFields");
+const validateIgnore = (param) => {
+    if (!param) {
+        return []
+    }
+    return param.split(',').map((item) => item.trim())
+}
+
+const getFullPopulateObject = (modelUid, maxDepth = 20, ignore, skipCreatorFields, ignoreFields = [], ignorePaths = [], parentPath = '') => {
 
   if (maxDepth <= 1) {
     return true;
@@ -21,37 +25,70 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, ignore) => {
     return undefined;
   }
 
+  const attributes = Object.entries(getModelPopulationAttributes(model)).filter(([, value]) =>
+      ['relation', 'component', 'dynamiczone', 'media'].includes(value.type)
+  )
+
   const populate = {};
   const model = strapi.getModel(modelUid);
   if (ignore && !ignore.includes(model.collectionName))
     ignore.push(model.collectionName);
-  for (const [key, value] of Object.entries(
-      getModelPopulationAttributes(model)
-  )) {
-    if (ignore?.includes(key)) continue;
-    if (value) {
-      if (value.type === "component") {
-        populate[key] = getFullPopulateObject(value.component, maxDepth - 1);
-      } else if (value.type === "dynamiczone") {
-        const dynamicPopulate = value.components.reduce((prev, cur) => {
-          const curPopulate = getFullPopulateObject(cur, maxDepth - 1);
-          return merge(prev, {[cur]: curPopulate});
-        }, {});
-        populate[key] = isEmpty(dynamicPopulate) ? true : { on: dynamicPopulate };
-      } else if (value.type === "relation") {
-        const relationPopulate = getFullPopulateObject(
-            value.target,
-            key === "localizations" && maxDepth > 2 ? 1 : maxDepth - 1,
-            ignore
-        );
-        if (relationPopulate) {
-          populate[key] = relationPopulate;
+
+    for (const [key, value] of attributes) {
+      const fullFieldName = parentPath ? `${parentPath}.${key}` : key
+   
+      if (ignore?.includes(key)) continue;
+
+      if (ignoreFields?.includes(attrName) || ignoreFields.has(model.collectionName + '.' + key)) {
+          continue
+      }
+
+      if (ignorePaths?.includes(fullFieldName)) {
+          continue
+      }
+
+      if (value) {
+        if (value.type === "component") {
+          populate[key] = getFullPopulateObject(
+            value.component,
+            maxDepth - 1,
+            skipCreatorFields,
+            ignoreFields,
+            ignorePaths,
+            fullFieldName
+          );
+        } else if (value.type === "dynamiczone") {
+          const dynamicPopulate = value.components.reduce((prev, cur) => {
+            const curPopulate = getFullPopulateObject(
+              cur,
+              maxDepth - 1,
+              ignore,
+              skipCreatorFields,
+              ignoreFields,
+              ignorePaths,
+              fullFieldName
+            );
+            return merge(prev, {[cur]: curPopulate});
+          }, {});
+          populate[key] = isEmpty(dynamicPopulate) ? true : { on: dynamicPopulate };
+        } else if (value.type === "relation") {
+          const relationPopulate = getFullPopulateObject(
+              value.target,
+              key === "localizations" && maxDepth > 2 ? 1 : maxDepth - 1,
+              ignore,
+              skipCreatorFields,
+              ignoreFields,
+              ignorePaths,
+              fullFieldName
+          );
+          if (relationPopulate) {
+            populate[key] = relationPopulate;
+          }
+        } else if (value.type === "media") {
+          populate[key] = true;
         }
-      } else if (value.type === "media") {
-        populate[key] = true;
       }
     }
-  }
   return isEmpty(populate) ? true : { populate };
 };
 

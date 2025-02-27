@@ -2,19 +2,21 @@
 const { getFullPopulateObject } = require("./helpers");
 
 module.exports = ({ strapi }) => {
+    const {
+        defaultDepth,
+        ignoreFields,
+        ignorePaths,
+        skipCreatorFields
+    } = strapi.config.get('plugin.' + 'strapi-v5-plugin-populate-deep')
+
   // Subscribe to the lifecycles that we are intrested in.
   strapi.db.lifecycles.subscribe((event) => {
     if (event.action === "beforeFindMany" || event.action === "beforeFindOne") {
       const level = event.params?.pLevel;
 
-      const defaultDepth =
-        strapi
-          .plugin("strapi-v5-plugin-populate-deep")
-          ?.config("defaultDepth") || 5;
-
       if (level !== undefined) {
         const depth = level ?? defaultDepth;
-        const modelObject = getFullPopulateObject(event.model.uid, depth, []);
+        const modelObject = getFullPopulateObject(event.model.uid, depth, [], skipCreatorFields, ignoreFields, ignorePaths);
         event.params.populate = modelObject.populate;
       }
     }
