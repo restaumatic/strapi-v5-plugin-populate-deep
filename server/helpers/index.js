@@ -50,6 +50,10 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
             continue
         }
 
+        if (attrName === "localizations" && fullFieldName !== "localizations") {
+          continue;
+        }
+
         if (debug) {
             const skipLog = [
                 'admin::user',
@@ -108,7 +112,7 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
                 populate[attrName] = relationPopulate
             }
         } else if (attrObject.type === 'media') {
-          populate[key] = {
+          populate[attrName] = {
             fields: ['url', 'alternativeText'],
             populate: false
           };
