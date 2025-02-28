@@ -42,7 +42,7 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
 
         // Check if the field is ignored (using fullFieldName)
         if (ignorePaths.includes(fullFieldName)) {
-            debug && console.log(`Ignoring field: ${fullFieldName}`)
+            debug && console.log(`Ignoring path: ${fullFieldName}`)
             continue
         }
 
@@ -94,6 +94,16 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
             if (attrObject.target === 'admin::user' && skipCreatorFields) {
                 continue
             }
+
+            if (attrName === "localizations") {
+              populate[attrName] = {
+                fields: ['locale'],
+                populate: false
+              };
+
+              continue;
+            }
+
             const relationPopulate = getFullPopulateObject(
                 attrObject.target,
                 maxDepth - 1,
