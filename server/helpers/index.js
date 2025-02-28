@@ -19,7 +19,7 @@ const validateIgnore = (param) => {
 const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignoreFields = [], ignorePaths = [], parentPath = '') => {
     const debug = true
     if (maxDepth <= 1) {
-        debug && console.log('maxDepth reached, skipping')
+        // debug && console.log('maxDepth reached, skipping')
         return true
     }
     if (modelUid === 'admin::user' && skipCreatorFields) {
@@ -104,10 +104,14 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
                 fullFieldName
             )
             if (!isEmpty(relationPopulate)) {
+
                 populate[attrName] = relationPopulate
             }
         } else if (attrObject.type === 'media') {
-            populate[attrName] = true
+          populate[key] = {
+            fields: ['url', 'alternativeText'],
+            populate: false
+          };
         }
     }
 
