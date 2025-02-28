@@ -6,7 +6,8 @@ module.exports = ({ strapi }) => {
         defaultDepth,
         ignoreFields,
         ignorePaths,
-        skipCreatorFields
+        skipCreatorFields,
+        debug,
     } = strapi.config.get('plugin.' + 'strapi-v5-plugin-populate-deep')
 
   // Subscribe to the lifecycles that we are intrested in.
@@ -16,7 +17,7 @@ module.exports = ({ strapi }) => {
 
       if (level !== undefined) {
         const depth = level ?? defaultDepth;
-        const modelObject = getFullPopulateObject(event.model.uid, depth, skipCreatorFields, ignoreFields, ignorePaths);
+        const modelObject = getFullPopulateObject(event.model.uid, depth, skipCreatorFields, ignoreFields, ignorePaths, debug);
         event.params.populate = modelObject.populate;
       }
     }

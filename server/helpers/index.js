@@ -16,10 +16,8 @@ const validateIgnore = (param) => {
     return param.split(',').map((item) => item.trim())
 }
 
-const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignoreFields = [], ignorePaths = [], parentPath = '') => {
-    const debug = true
+const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignoreFields = [], ignorePaths = [], debug = false, parentPath = '') => {
     if (maxDepth <= 1) {
-        // debug && console.log('maxDepth reached, skipping')
         return true
     }
     if (modelUid === 'admin::user' && skipCreatorFields) {
@@ -35,8 +33,6 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
 
     for (const [attrName, attrObject] of attributes) {
         const fullFieldName = parentPath ? `${parentPath}.${attrName}` : attrName
-
-        // console.log('attrName:', attrName, ' :', model.collectionName + '.' + attrName)
 
         // Check if the field is ignored (using attrName)
         if (ignoreFields.includes(attrName) || ignoreFields.includes(model.collectionName + '.' + attrName)) {

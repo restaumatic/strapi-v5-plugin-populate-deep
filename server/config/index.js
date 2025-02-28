@@ -5,7 +5,8 @@ module.exports = {
     defaultDepth: 5,
     skipCreatorFields: true,
     ignoreFields: [],
-    ignorePaths: []
+    ignorePaths: [],
+    debug: false,
   },
   validator: () => { },
 };
