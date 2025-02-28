@@ -16,7 +16,7 @@ module.exports = ({ strapi }) => {
 
       if (level !== undefined) {
         const depth = level ?? defaultDepth;
-        const modelObject = getFullPopulateObject(event.model.uid, depth, [], skipCreatorFields, ignoreFields, ignorePaths);
+        const modelObject = getFullPopulateObject(event.model.uid, depth, skipCreatorFields, ignoreFields, ignorePaths);
         event.params.populate = modelObject.populate;
       }
     }
