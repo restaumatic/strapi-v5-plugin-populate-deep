@@ -16,7 +16,7 @@ const validateIgnore = (param) => {
   return param.split(',').map((item) => item.trim())
 }
 
-const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignoreFields = [], ignorePaths = [], forcePopulatePath = [], debug = false, parentPath = '') => {
+const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignoreFields = [], ignorePaths = [], forcePopulatePaths = [], debug = false, parentPath = '') => {
   if (maxDepth <= 1) {
     return true
   }
@@ -47,7 +47,7 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
       continue
     }
 
-    if (forcePopulatePath.includes(fullFieldName)) {
+    if (forcePopulatePaths.includes(fullFieldName)) {
       populate[attrName] = true
       continue;
     }
@@ -78,7 +78,7 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
         skipCreatorFields,
         ignoreFields,
         ignorePaths,
-        forcePopulatePath,
+        forcePopulatePaths,
         debug,
         fullFieldName
       )
@@ -90,7 +90,7 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
           skipCreatorFields,
           ignoreFields,
           ignorePaths,
-          forcePopulatePath,
+          forcePopulatePaths,
           debug,
           fullFieldName
         )
@@ -118,7 +118,7 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
         skipCreatorFields,
         ignoreFields,
         ignorePaths,
-        forcePopulatePath,
+        forcePopulatePaths,
         debug,
         fullFieldName
       )
