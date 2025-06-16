@@ -16,7 +16,7 @@ const validateIgnore = (param) => {
   return param.split(',').map((item) => item.trim())
 }
 
-const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignoreFields = [], ignorePaths = [], debug = false, parentPath = '') => {
+const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignoreFields = [], ignorePaths = [], forcePopulatePath = [], debug = false, parentPath = '') => {
   if (maxDepth <= 1) {
     return true
   }
@@ -26,7 +26,6 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
 
   const populate = {}
   const model = strapi.getModel(modelUid)
-
 
   const allAttributes = Object.entries(getModelPopulationAttributes(model))
   const attributes = allAttributes.filter(([, value]) =>
@@ -44,6 +43,10 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
     }
   }
 
+  if (debug) {
+    console.log('attrs', attributes)
+  }
+
   for (const [attrName, attrObject] of attributes) {
     const fullFieldName = parentPath ? `${parentPath}.${attrName}` : attrName
 
@@ -57,6 +60,10 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
     if (ignorePaths.includes(fullFieldName)) {
       debug && console.log(`Ignoring path: ${fullFieldName}`)
       continue
+    }
+
+    if (forcePopulatePath.includes(fullFieldName)) {
+
     }
 
     if (attrName === "localizations" && fullFieldName !== "localizations") {
@@ -85,6 +92,7 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
         skipCreatorFields,
         ignoreFields,
         ignorePaths,
+        forcePopulatePath,
         debug,
         fullFieldName
       )
@@ -96,6 +104,7 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
           skipCreatorFields,
           ignoreFields,
           ignorePaths,
+          forcePopulatePath,
           debug,
           fullFieldName
         )
@@ -123,18 +132,21 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
         skipCreatorFields,
         ignoreFields,
         ignorePaths,
+        forcePopulatePath,
         debug,
         fullFieldName
       )
 
-      populate[attrName] = isEmpty(relationPopulate) ? null : relationPopulate
+      if (!isEmpty(relationPopulate)) {
+        populate[attrName] = isEmpty(relationPopulate) ? null : relationPopulate
 
-      if (debug) {
-        console.log(`Populating relation: ${fullFieldName} with:`, JSON.stringify(relationPopulate))
+        if (debug) {
+          console.log(`Populating relation: ${fullFieldName} with:`, JSON.stringify(relationPopulate))
+        }
       }
     } else if (attrObject.type === 'media') {
       populate[attrName] = {
-        fields: ['url', 'alternativeText'],
+        fields: ['url', 'alternativeText', 'formats'],
         populate: false
       };
     }
@@ -144,7 +156,6 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
     return true;
   }
 
-  // For debugging
   if (debug && !isEmpty(populate)) {
     console.log(`Populate object for ${modelUid}:`, JSON.stringify({ populate }));
   }
