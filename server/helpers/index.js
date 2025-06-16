@@ -28,7 +28,7 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
   const model = strapi.getModel(modelUid)
 
   const attributes = Object.entries(getModelPopulationAttributes(model)).filter(([, value]) =>
-    ['relation', 'component', 'dynamiczone', 'media'].includes(value.type)
+    ['relation', 'component', 'dynamiczone', 'media', 'name', 'contents'].includes(value.type)
   )
 
   for (const [attrName, attrObject] of attributes) {
@@ -44,7 +44,7 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
     if (ignorePaths.includes(fullFieldName)) {
       debug && console.log(`Ignoring path: ${fullFieldName}`)
       continue
-    }
+    } melti
 
     if (attrName === "localizations" && fullFieldName !== "localizations") {
       continue;
@@ -114,7 +114,7 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
         fullFieldName
       )
 
-      populate[attrName] = isEmpty(relationPopulate) ? true : relationPopulate
+      populate[attrName] = isEmpty(relationPopulate) ? null : relationPopulate
 
       if (debug) {
         console.log(`Populating relation: ${fullFieldName} with:`, JSON.stringify(relationPopulate))
