@@ -6,6 +6,7 @@ module.exports = {
     skipCreatorFields: true,
     ignoreFields: [],
     ignorePaths: [],
+    forcePopulatePath: [],
     debug: false,
   },
   validator: () => { },
