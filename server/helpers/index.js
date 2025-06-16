@@ -32,21 +32,6 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
     ['relation', 'component', 'dynamiczone', 'media'].includes(value.type)
   )
 
-  const scalarFields = Object.entries(allAttributes)
-    .filter(([fieldName, attr]) => attr.type === 'string' && ['name', 'content', 'label', 'id'].includes(fieldName))
-    .map(([fieldName]) => fieldName);
-
-  if (scalarFields.length > 0) {
-    populate.fields = scalarFields;
-    if (debug) {
-      console.log(`Including scalar fields for ${modelUid}:`, scalarFields);
-    }
-  }
-
-  if (debug) {
-    console.log('attrs', attributes)
-  }
-
   for (const [attrName, attrObject] of attributes) {
     const fullFieldName = parentPath ? `${parentPath}.${attrName}` : attrName
 
@@ -63,7 +48,8 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
     }
 
     if (forcePopulatePath.includes(fullFieldName)) {
-
+      populate[attrName] = true
+      continue;
     }
 
     if (attrName === "localizations" && fullFieldName !== "localizations") {
