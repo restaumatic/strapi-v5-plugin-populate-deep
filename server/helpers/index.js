@@ -113,12 +113,11 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
         debug,
         fullFieldName
       )
-      if (!isEmpty(relationPopulate)) {
-        populate[attrName] = relationPopulate;
 
-        if (debug) {
-          console.log(`Populating relation: ${fullFieldName} with:`, JSON.stringify(relationPopulate))
-        }
+      populate[attrName] = isEmpty(relationPopulate) ? true : relationPopulate
+
+      if (debug) {
+        console.log(`Populating relation: ${fullFieldName} with:`, JSON.stringify(relationPopulate))
       }
     } else if (attrObject.type === 'media') {
       populate[attrName] = {
