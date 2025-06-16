@@ -44,7 +44,7 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
     if (ignorePaths.includes(fullFieldName)) {
       debug && console.log(`Ignoring path: ${fullFieldName}`)
       continue
-    } melti
+    }
 
     if (attrName === "localizations" && fullFieldName !== "localizations") {
       continue;
