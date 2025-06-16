@@ -27,9 +27,22 @@ const getFullPopulateObject = (modelUid, maxDepth = 20, skipCreatorFields, ignor
   const populate = {}
   const model = strapi.getModel(modelUid)
 
-  const attributes = Object.entries(getModelPopulationAttributes(model)).filter(([, value]) =>
-    ['relation', 'component', 'dynamiczone', 'media', 'name', 'contents'].includes(value.type)
+
+  const allAttributes = Object.entries(getModelPopulationAttributes(model))
+  const attributes = allAttributes.filter(([, value]) =>
+    ['relation', 'component', 'dynamiczone', 'media'].includes(value.type)
   )
+
+  const scalarFields = Object.entries(allAttributes)
+    .filter(([fieldName, attr]) => attr.type === 'string' && ['name', 'content', 'label', 'id'].includes(fieldName))
+    .map(([fieldName]) => fieldName);
+
+  if (scalarFields.length > 0) {
+    populate.fields = scalarFields;
+    if (debug) {
+      console.log(`Including scalar fields for ${modelUid}:`, scalarFields);
+    }
+  }
 
   for (const [attrName, attrObject] of attributes) {
     const fullFieldName = parentPath ? `${parentPath}.${attrName}` : attrName
